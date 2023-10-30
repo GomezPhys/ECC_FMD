@@ -18,7 +18,7 @@ Descriptives <- read_excel("~/ECC_FMD.xlsx",
 View(Descriptives)
 attach(Descriptives)
 
-table1(~ FMD_Basal + FMD_Basal_2 + FMD_AbsoluteChange + FMD_AbsoluteChange_2 + FMD_Difference + FMD_Difference_2 | Sex*Condition,
+table1(~ Peak + Basal_Diameter + Basal_Diameter2 + FMD_AbsoluteChange + FMD_AbsoluteChange_2 + FMD_Difference + FMD_Difference_2 | Condition,
        total=F,render.categorical="FREQ (PCTnoNA%)", na.rm = TRUE,data=Df,
        render.missing=NULL,topclass="Rtable1-grid Rtable1-shade Rtable1-times",
        overall=FALSE)
@@ -49,18 +49,18 @@ Df$Condition <- ordered(Df$Condition,
 ## Shapiro Wilk
 Df %>% group_by(Condition) %>% shapiro_test(FMD)
 
-Df %>% group_by(Condition) %>% shapiro_test(FMD_Basal)
-Df %>% group_by(Condition) %>% shapiro_test(FMD_Peak) 
+Df %>% group_by(Condition) %>% shapiro_test(Basal_Diameter)
+Df %>% group_by(Condition) %>% shapiro_test(Peak) 
 Df %>% group_by(Condition) %>% shapiro_test(FMD_Difference)
 
 ## Wilcoxon for Non-parametric data
-wilcox.test(FMD ~ Condition, data = Df2)
+wilcox.test(FMD ~ Condition, data = Df)
 
 ## Effect size
-Df2  %>% wilcox_effsize(FMD ~ Condition)
+Df  %>% wilcox_effsize(FMD ~ Condition)
 
 ## Figure FMD
-FMD <- ggboxplot(Df2, x = "Condition", y = "FMD",
+FMD <- ggboxplot(Df, x = "Condition", y = "FMD",
                  color = "Condition", palette = c("#00AFBB", "#FC4E07"),
                  order = c("Pre", "Post"),
                  ylab = "FMD", xlab = "Condition")  +
@@ -107,15 +107,15 @@ Df2  %>% cohens_d(FMD_Peak ~ Condition,
                   paired = TRUE, hedges.correction = TRUE)
 
 ## Figure FMD
-FMD_Peak <- ggboxplot(Df, x = "Condition", y = "FMD_Peak",
+Peak <- ggboxplot(Df, x = "Condition", y = "Peak",
                       color = "Condition", palette = c("#00AFBB", "#FC4E07"),
                       order = c("Pre", "Post"),
-                      ylab = "FMD Peak", xlab = "Condition") +
+                      ylab = "Peak", xlab = "Condition") +
   theme_prism() +
-  stat_compare_means(method = "t.test", paired = F,
+  stat_compare_means(method = "wilcox.test", paired = F,
                      label.x = 1.4,
                      label.y = 5)
-FMD_Peak
+Peak
 ggsave("FMD_Peak.png")
 
 ########## FMD difference
@@ -123,7 +123,7 @@ ggsave("FMD_Peak.png")
 ## wilcoxon for parametric data
 wilcox.test(FMD_Difference ~ Condition, data = Df)
 
-## Effect size
+i## Effect size
 Df %>% wilcox_effsize(FMD_Difference ~ Condition)
 
 ggsave("FMD_Difference.png")
@@ -178,24 +178,24 @@ FMD_AbsoluteChange_2
 
 
 #####FMD_BASALINE
-FMD_Basal <- ggboxplot(Df, x = "Condition", y = "FMD_Basal",
+Basal_Diameter <- ggboxplot(Df, x = "Condition", y = "Basal_Diameter",
                                   color = "Condition", palette = c("#00AFBB", "#FC4E07"),
                                   order = c("Pre", "Post"),
-                                  ylab = "FMD_Basal", xlab = "Condition") +
+                                  ylab = "Basal_Diamter", xlab = "Condition") +
   theme_prism() +
   stat_compare_means(method = "wilcox.test", paired = F,
                      label.x = 1.4,
                      label.y = 5)
-FMD_Basal
+Basal_Diameter
 
 ####FMD_Baseline_2
 
-FMD_Basal_2 <- ggboxplot(Df, x = "Condition", y = "FMD_Basal_2",
+Basal_Diameter2 <- ggboxplot(Df, x = "Condition", y = "Basal_Diameter2",
                        color = "Condition", palette = c("#00AFBB", "#FC4E07"),
                        order = c("Pre", "Post"),
-                       ylab = "FMD_Basal_2", xlab = "Condition") +
+                       ylab = "Basal_Diameter2", xlab = "Condition") +
   theme_prism() +
   stat_compare_means(method = "wilcox.test", paired = F,
                      label.x = 1.4,
                      label.y = 5)
-FMD_Basal_2
+Basal_Diameter2
