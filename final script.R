@@ -13,6 +13,54 @@ library(table1) #for descriptives
 
 Descriptives <- read_excel("~/MG_Final_ECC_FMD.xlsx", sheet = "Descriptives")
 View(Descriptives)
+Descriptives$Sex <- as.factor(Descriptives$Sex)
+###Nomrality for Descriptives
+
+Descriptives %>% group_by(Condition) %>% shapiro_test(Age)
+wilcox_test_results <- wilcox.test(Age ~ Sex, data = Descriptives)
+
+# View the results
+print(wilcox_test_results)
+
+Descriptives %>% group_by(Condition) %>% shapiro_test(Height)
+t_test_results <- t.test(Height ~ Sex, data = Descriptives)
+print(t_test_results)
+
+
+Descriptives %>% group_by(Condition) %>% shapiro_test(Weight)
+
+wilcox_test_results <- wilcox.test(Height ~ Sex, data = Descriptives)
+
+# View the results
+print(wilcox_test_results)
+
+Descriptives %>% group_by(Condition) %>% shapiro_test(Lactate)
+t_test_results <- t.test(Lactate ~ Sex, data = Descriptives)
+
+# View the results
+print(t_test_results)
+
+Descriptives %>% group_by(Condition) %>% shapiro_test(HR)
+t_test_results <- t.test(HR ~ Sex, data = Descriptives)
+
+# View the results
+print(t_test_results)
+Descriptives %>% group_by(Condition) %>% shapiro_test(RPE)
+t_test_results <- t.test(RPE ~ Sex, data = Descriptives)
+
+# View the results
+print(t_test_results)
+
+
+Descriptives %>% group_by(Condition) %>% shapiro_test(VO2max)
+t_test_results <- t.test(VO2max ~ Sex, data = Descriptives)
+
+# View the results
+print(t_test_results)
+
+
+## Convert from character to factor data
+Df$Sex <- as.factor(Df$Sex)
 
 Descriptives <- Descriptives %>%  select("Age","Height","Weight",
               "VO2max","HR","Lactate","RPE")
@@ -55,6 +103,7 @@ table1(~ Basal_Diameter + Basal_Diameter_2 + Peak + FMD_Percent + FMD_Percent_2 
 
 
 ## Shapiro Wilk
+Df %>% shapiro_test(Age)
 Df %>% group_by(Condition) %>% shapiro_test(Peak) 
 Df %>% group_by(Condition) %>% shapiro_test(Basal_Diameter)
 Df %>% group_by(Condition) %>% shapiro_test(Basal_Diameter_2)
@@ -178,7 +227,16 @@ FMD_Percent <- ggboxplot(Df, x = "Condition", y = "FMD_Percent",
                      label.y = 20)
 FMD_Percent
 
-
+## Figure FMD_Percent
+FMD_Percent <- ggpaired(Df, x = "Condition", y = "FMD_Percent",
+                         color = "Condition", palette = c("#00AFBB", "#FC4E07"),
+                         order = c("Pre", "Post"),
+                         ylab = "FMD (%)", xlab = "Condition")  +
+  theme_prism() +
+  stat_compare_means(method = "wilcox.test", paired = F,
+                     label.x = 1.4,
+                     label.y = 15)
+FMD_Percent
 ####FMD_Percent_2
 
 
@@ -189,6 +247,16 @@ Df  %>% wilcox_effsize(FMD_Percent_2 ~ Condition)
 
 ## Figure FMD_Percent
 FMD_Percent_2 <- ggboxplot(Df, x = "Condition", y = "FMD_Percent_2",
+                           color = "Condition", palette = c("#00AFBB", "#FC4E07"),
+                           order = c("Pre", "Post"),
+                           ylab = "FMD (%)", xlab = "Condition")  +
+  theme_prism() +
+  stat_compare_means(method = "wilcox.test", paired = F,
+                     label.x = 1.4,
+                     label.y = 20)
+FMD_Percent_2
+
+FMD_Percent_2 <- ggpaired(Df, x = "Condition", y = "FMD_Percent_2",
                            color = "Condition", palette = c("#00AFBB", "#FC4E07"),
                            order = c("Pre", "Post"),
                            ylab = "FMD (%)", xlab = "Condition")  +
